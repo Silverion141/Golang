@@ -17,25 +17,14 @@ var err error
 
 type Customer struct {
 	Address struct {
-		Street string `json:"street"`
 		City   string `json:"city"`
 		State  string `json:"state"`
+		Street string `json:"street"`
 		Zip    string `json:"zip"`
 	} `json:"address"`
-	FirstName string  `json:"first_name"`
-	LastName  string  `json:"last_name"`
-	Birthdate string  `json:"birthdate"`
-	Salary    float64 `json:"salary"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
-
-// type Customer struct {
-// 	Address struct {
-// 		Street string `json:"street"`
-// 		Age int `json:"age"`
-// 	} `json:"address`
-// 	FirstName string `json:"first_name"`
-// 	LastName string `json:"last_name"`
-// }
 
 func getCustomers(w http.ResponseWriter, r *http.Request) {
 
@@ -49,36 +38,8 @@ func getCustomers(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintln(w, "First Name : "+request.FirstName)
 	fmt.Fprintln(w, "City Name : "+request.Address.City)
+
 	//Tugas insert kan ke table Customer
-}
-
-func createCustomers(w http.ResponseWriter, r *http.Request) {
-
-	body, _ := ioutil.ReadAll(r.Body)
-
-	var request Customer
-
-	if err = json.Unmarshal(body, &request); err != nil {
-		fmt.Println("Failed decoding json message")
-	} else {
-		if r.Method == "POST" {
-
-			FirstName := request.FirstName
-			LastName := request.LastName
-
-			stmt, err := db.Prepare("INSERT INTO employees (LastName,FirstName) VALUES (?,?)")
-
-			_, err = stmt.Exec(LastName, FirstName)
-
-			if err != nil {
-				fmt.Fprintf(w, "Data Duplicate")
-			} else {
-				fmt.Fprintf(w, "Data Created")
-			}
-
-		}
-	}
-
 }
 
 func main() {
@@ -97,7 +58,6 @@ func main() {
 
 	// Route handles & endpoints
 	r.HandleFunc("/customers", getCustomers).Methods("POST")
-	r.HandleFunc("/createcustomers", createCustomers).Methods("POST")
 
 	// Start server
 	log.Fatal(http.ListenAndServe(":8181", r))
